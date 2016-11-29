@@ -4,6 +4,7 @@ var express = require('express'),
     io = require('socket.io').listen(server),
     bcrypt = require('bcrypt'),
     bodyParser = require('body-parser'),
+    uuid = require('uuid'),
     pgp = require('pg-promise')();
     // nicknames = [];
 
@@ -38,5 +39,30 @@ app.post('/signup', function(req, res) {
     }
     // Return the response
     res.json({status: "OK"});
+  });
+});
+
+app.post('/login', function(req, res) {
+  var userInfo = req.body;
+  db.query('SELECT password, id FROM copee where copee.email = $1', [userInfo.email]).then(function(oldPass) {
+    console.log(oldPass);
+    console.log(oldPass[0].password);
+    bcrypt.compare(userInfo.password, oldPass[0].password, function(err, newHash) {
+      console.log('THIS THIS THIS: ' + res);
+      if (err) {
+        res.json({status: "Failed"});
+        return;
+      } else if (!newHash) {
+        res.json({status: "Password Incorrect"});
+        return;
+      } else {
+        var token = uuid();
+        var id = oldPass[0].id;
+        console.log(token);
+        db.query('INSERT INTO auth_token VALUES($1, default, $2)', [token, id]);
+      }
+      res.json({token: token, status: "Logged In"});
+    });
+
   });
 });
