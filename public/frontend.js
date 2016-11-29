@@ -13,7 +13,13 @@ app.config(function($stateProvider, $urlRouterProvider) {
     url: '/signup',
     templateUrl: 'signup.html',
     controller: 'SignUpController'
-  });
+  })
+  .state({
+    name: 'login',
+    url: '/login',
+    templateUrl: 'login.html',
+    controller: 'LoginController'
+  })
 
   $urlRouterProvider.otherwise('/');
 });
@@ -25,6 +31,16 @@ app.factory('copeService', function($http, $cookies, $rootScope, $state) {
   service.signupPageCall = function(data) {
     // Define route url as it is in the backend.js file
     var url = 'http://localhost:3000/signup';
+    return $http({
+      method: 'POST',
+      url: url,
+      data: data
+    });
+  };
+
+  // Login Service
+  service.loginPageCall = function(data) {
+    var url = 'http://localhost:3000/login';
     return $http({
       method: 'POST',
       url: url,
@@ -50,9 +66,33 @@ app.controller('SignUpController', function($scope, copeService, $stateParams, $
       first_name: $scope.first_name,
       last_name: $scope.last_name
     };
+    var loginData = {
+      email: $scope.email,
+      password: $scope.password
+    }
     copeService.signupPageCall(data).success(function(signedUp) {
       $scope.success = signedUp;
       console.log(signedUp);
+      copeService.loginPageCall(loginData).success(function(loggedIn) {
+        $scope.success = loggedIn;
+        console.log(loggedIn);
+      });
     })
   }
+});
+
+app.controller('LoginController', function($scope, copeService, $stateParams, $state, $cookies, $rootScope) {
+  $scope.submitLogin = function() {
+    var data = {
+      email: $scope.email,
+      password: $scope.password
+    };
+    copeService.loginPageCall(data).error(function() {
+      $scope.failed = true;
+    })
+    copeService.loginPageCall(data).success(function(loggedIn) {
+      $scope.success = loggedIn;
+      console.log(loggedIn);
+    });
+  };
 });

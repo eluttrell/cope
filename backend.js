@@ -53,7 +53,7 @@ app.post('/login', function(req, res) {
         res.json({status: "Failed"});
         return;
       } else if (!newHash) {
-        res.json({status: "Password Incorrect"});
+        res.status(401).json({status: "Failed", message: "Password Incorrect"})
         return;
       } else {
         var token = uuid();
@@ -61,7 +61,7 @@ app.post('/login', function(req, res) {
         console.log(token);
         db.query('INSERT INTO auth_token VALUES($1, default, $2)', [token, id]);
       }
-      res.json({token: token, status: "Logged In"});
+      res.status(200).json({token: token, status: "Logged In"});
     });
 
   });
