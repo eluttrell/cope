@@ -21,7 +21,9 @@ app.config(function($stateProvider, $urlRouterProvider) {
 app.factory('copeService', function($http, $cookies, $rootScope, $state) {
   var service = {};
 
+  // Signup Service
   service.signupPageCall = function(data) {
+    // Define route url as it is in the backend.js file
     var url = 'http://localhost:3000/signup';
     return $http({
       method: 'POST',
@@ -29,6 +31,8 @@ app.factory('copeService', function($http, $cookies, $rootScope, $state) {
       data: data
     });
   };
+
+  // Return the result of the service call
  return service;
 });
 
@@ -38,6 +42,7 @@ app.controller('MainController', function($scope, copeService, $stateParams, $st
 
 app.controller('SignUpController', function($scope, copeService, $stateParams, $state, $cookies, $rootScope) {
   $scope.submitSignup = function() {
+    // assign $scope values to key: value pairs for data insertion (on the backend)
     var data = {
       username: $scope.username,
       email: $scope.email,
