@@ -4,6 +4,7 @@ var express = require('express'),
    io = require('socket.io').listen(server),
    bcrypt = require('bcrypt');
    bodyParser = require('body-parser');
+   uuid = require('uuid');
    pgp = require('pg-promise')();
 
   //  nicknames = [];
@@ -42,19 +43,24 @@ app.post('/signup', function(req, res) {
   });
 });
 
-app.post('/login', function(req, res){
-  var userInfo = req.body;
-  var oldPass = db.query('SELECT password from copee WHERE copee.email = $1', [userInfo.email]);
-  console.log(oldPass);
-  bcrypt.hash(userInfo.password, 10, function(err, hash) {
-    if(err) {
-      res.json({status: "Failed"});
-      return;
-    } else if(hash != oldPass) {
-      res.json({status: "Incorrect Password"});
-      return;
-    } else if(hash === oldPass){
-
-    }
-  });
+app.post('/login', function(req, res) {
+ var userInfo = req.body;
+ db.query('SELECT password, id FROM copee where copee.email = $1', [userInfo.email]).then(function(oldPass) {
+   console.log(oldPass[0].password);
+   bcrypt.compare(userInfo.password, oldPass[0].password, function(err, newHash) {
+     if (err) {
+       res.json({status: "Failed"});
+       return;
+     } else if (!newHash) {
+       res.json({status: "Password Incorrect"});
+       return;
+     } else {
+       console.log("HELLO THERE!!!!!!!");
+       var token = uuid();
+       var id = oldPass[0].id;
+       db.query('INSERT INTO auth_token VALUES($1, default, $2)', [token, id]);
+     }
+     res.json({token: token, status: "loggedIn"});
+   });
+ });
 });
