@@ -52,15 +52,14 @@ app.post('/login', function(req, res) {
        res.json({status: "Failed"});
        return;
      } else if (!newHash) {
-       res.json({status: "Password Incorrect"});
+       res.status(401).json({status: "Failed", message: "Incorrect Password"});
        return;
      } else {
-       console.log("HELLO THERE!!!!!!!");
        var token = uuid();
        var id = oldPass[0].id;
        db.query('INSERT INTO auth_token VALUES($1, default, $2)', [token, id]);
      }
-     res.json({token: token, status: "loggedIn"});
+     res.status(200).json({token: token, status: "loggedIn"});
    });
  });
 });
