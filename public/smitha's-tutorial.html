@@ -1,0 +1,197 @@
+<div id="nickWrap">
+  <p>Enter a username</p>
+  <p id="nickError"></p>
+  <form id="setNick">
+    <input type="text" size="35" id="nickname" autofocus="on">
+    <input type="submit">
+  </form>
+</div>
+<div id="contentWrap">
+  <div id="chatWrap">
+    <div id="chat"></div>
+    <form class="send-msg" id="send-message">
+      <input size="35" id="message" autofocus="on">
+      <button class="send-btn" type="submit">Send</button>
+    </form>
+  </div>
+  <div id="users"></div>
+</div>
+<script type="text/javascript">
+  jQuery(function($) {
+    var socket = io.connect();
+    var $nickForm = $('#setNick');
+    var $nickError = $('#nickError');
+    var $nickBox = $('#nickname');
+    var $users = $('#users');
+    var $messageForm = $('#send-message');
+    var $messageBox = $('#message');
+    var $chat = $('#chat');
+
+    $nickForm.submit(function(e) {
+      e.preventDefault();
+      socket.emit('new user', $nickBox.val(), function(data) {
+        if(data) {
+          $('#nickWrap').hide();
+          $('#contentWrap').show();
+        } else {
+          $nickError.html('That username is already taken, please try again.');
+        }
+      });
+      $nickBox.val('');
+    });
+
+    $messageForm.submit(function(e) {
+      e.preventDefault();
+      socket.emit('send message', $messageBox.val());
+      $messageBox.val('');
+    });
+
+    socket.on('usernames', function(data) {
+      var html = '';
+      for(var i = 0; i <data.length; i++) {
+        html += data[i] + '<br/>';
+      }
+      $users.html(html);
+    })
+
+    socket.on('new message', function(data) {
+      console.log(data.data, data.username);
+      $chat.append('<li><b>' + data.username + ':</b> ' + data.data + '</li>');
+    });
+  });
+</script>
+
+<!-- Smitha's package.js -->
+    <!-- {
+      "name": "chat-app",
+      "version": "0.0.1",
+      "description": "Cope's socket.io chat app",
+      "dependencies": {
+        "express": "^4.14.0",
+        "socket.io": "^1.7.1"
+      }
+    } -->
+
+
+<!-- Smitha's backend.js -->
+    <!-- var express = require('express'),
+        app = express(),
+        server = require('http').createServer(app),
+        io = require('socket.io').listen(server),
+        nicknames = [];
+
+    server.listen(3000);
+
+    // Makes front end files pull from /public
+    app.use(express.static('public'));
+
+    // This is no longer necessary ßbecause of line above
+    // app.get('/', function(req, res) {
+    //   res.sendfile(__dirname + '/index.html');
+    // });
+
+    // This logs user connection status to the console and assigns nicknames (usernames)
+    io.on('connection', function(socket) {
+      socket.on('new user', function(data, callback) {
+        if (nicknames.indexOf(data) != -1) {
+          callback(false);
+        } else {
+          callback(true);
+          socket.nickname = data;
+          nicknames.push(socket.nickname);
+          io.sockets.emit('usernames', nicknames);
+        }
+      });
+
+    // This logs a user disconnect to the console
+      console.log('a user connected');
+      socket.on('disconnect', function() {
+        console.log('user disconnect');
+      });
+
+      function updateNicknames() {
+        io.sockets.emit('usernames', nicknames);
+      }
+
+      socket.on('disconnect', function(data) {
+        if(!socket.nickname) return;
+        nicknames.splice(nicknames.indexOf(socket.nickname), 1);
+        updateNicknames();
+      })
+    });
+
+    // This logs user's sent messages to the console along with the current username of the user
+    io.on('connection', function(socket) {
+      socket.on('send message', function(data) {
+        console.log(socket.nickname + "'s message: " + data)
+      })
+    })
+
+    // This sends the message from the server to the rest of the users. If you wanted to send it to everyone except the sender (or a specific socket), you would use socket.broadcast.emit('new message', data). Then on the client side (inside index.html) we will capture the 'new message' event and include it on the page.
+    io.sockets.on('connection', function(socket) {
+        socket.on('send message', function(data) {
+
+            io.sockets.emit('new message', {data: data, username: socket.nickname});
+        });
+    }); -->
+
+
+<!-- Smitha's tutorial css:
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    form.send-msg {
+        background: #000;
+        padding: 3px;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+    }
+
+    form input {
+        border: 0;
+        padding: 10px;
+        width: 90%;
+        margin-right: .5%;
+    }
+
+    form button {
+        width: 9%;
+        background: rgb(130, 224, 255);
+        border: none;
+        padding: 10px;
+    }
+
+    #chat li {
+        padding: 5px 10px;
+    }
+
+    #chat li:nth-child(odd) {
+        background: #eee;
+    }
+
+    #chatWrap {
+      float: left;
+      border: 1px solid black;
+      height: 100%;
+      width: 50%;
+    }
+
+    #contentWrap {
+      display: none;
+      border: 1px solid black;
+    }
+
+    #nickWrap {
+      width: 300px;
+    }
+
+    #chat {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
+ -->
