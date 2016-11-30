@@ -93,6 +93,7 @@ app.controller('LoginController', function($scope, copeService, $stateParams, $s
     copeService.loginPageCall(data).success(function(loggedIn) {
       $scope.success = loggedIn;
       console.log(loggedIn);
+
     });
   };
 });
