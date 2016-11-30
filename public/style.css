@@ -1,8 +1,11 @@
-body {
-  background-color: #1ABB9B;
+.nav {
+  background-color: white;
 }
-p {
+/*p {
   font-family: 'Open Sans', sans-serif;
   color: white;
   font-size: 11em;
+}*/
+.jumbotron {
+  margin-top: 25px;
 }
