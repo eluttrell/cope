@@ -23,6 +23,7 @@ var db = pgp(database='cope_db');
 
 db.connect();
 
+// Signup
 app.post('/signup', function(req, res) {
   // Contains key-value pairs of data submitted in the request body
   var userInfo = req.body;
@@ -42,12 +43,13 @@ app.post('/signup', function(req, res) {
   });
 });
 
+// Login
 app.post('/login', function(req, res) {
   var userInfo = req.body;
-  db.query('SELECT password, id FROM copee where copee.email = $1', [userInfo.email]).then(function(oldPass) {
-    console.log(oldPass);
-    console.log(oldPass[0].password);
-    bcrypt.compare(userInfo.password, oldPass[0].password, function(err, newHash) {
+  db.query('SELECT * FROM copee where copee.email = $1', [userInfo.email]).then(function(userInfo) {
+    console.log(userInfo);
+    console.log(userInfo[0].password);
+    bcrypt.compare(userInfo.password, userInfo[0].password, function(err, newHash) {
       console.log('THIS THIS THIS: ' + res);
       if (err) {
         res.json({status: "Failed"});
@@ -57,12 +59,17 @@ app.post('/login', function(req, res) {
         return;
       } else {
         var token = uuid();
-        var id = oldPass[0].id;
+        var id = userInfo[0].id;
         console.log(token);
         db.query('INSERT INTO auth_token VALUES($1, default, $2)', [token, id]);
       }
-      res.status(200).json({token: token, status: "Logged In"});
+      res.status(200).json({token: token, status: "Logged In", username: userInfo.username, email: userInfo.email, first_name: userInfo.first_name, last_name: userInfo.last_name});
     });
 
   });
 });
+
+// Profile
+app.get('/profile', function() {
+
+})
