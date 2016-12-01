@@ -2,10 +2,15 @@ var express = require('express'),
    app = express(),
    server = require('http').createServer(app),
    io = require('socket.io').listen(server),
-   bcrypt = require('bcrypt');
-   bodyParser = require('body-parser');
-   uuid = require('uuid');
-   pgp = require('pg-promise')();
+   bcrypt = require('bcrypt'),
+   bodyParser = require('body-parser'),
+   uuid = require('uuid'),
+   pgp = require('pg-promise')(),
+   dotenv = require('dotenv').config(),
+   room = '',
+   listeners = [],
+   speakerRoom = [];
+  //  http = require('http').Server(app);
 
   //  nicknames = [];
 
@@ -15,12 +20,14 @@ var express = require('express'),
 app.use(express.static('public'));
 app.use(bodyParser.json());
 
-server.listen(3000);
-
 
 var db = pgp(database='cope_db');
 
-db.connect();
+db.connect({
+  host: process.env.DB_HOST,
+  username: process.env.DB_USER,
+  password: process.dnv.DB_PASS
+});
 
 //Signup
 app.post('/signup', function(req, res) {
@@ -43,11 +50,13 @@ app.post('/signup', function(req, res) {
   });
 });
 
+//Login
 app.post('/login', function(req, res) {
  var userInfo = req.body;
- db.query('SELECT password, id FROM copee where copee.email = $1', [userInfo.email]).then(function(oldPass) {
-   console.log(oldPass[0].password);
-   bcrypt.compare(userInfo.password, oldPass[0].password, function(err, newHash) {
+ db.query('SELECT * FROM copee where copee.email = $1', [userInfo.email]).then(function(userInfoOld) {
+   console.log(userInfoOld);
+   console.log("HEY HEY HEY",userInfoOld[0].password);
+   bcrypt.compare(userInfo.password, userInfoOld[0].password, function(err, newHash) {
      if (err) {
        res.json({status: "Failed"});
        return;
@@ -56,12 +65,13 @@ app.post('/login', function(req, res) {
        return;
      } else {
        var token = uuid();
-       var id = oldPass[0].id;
+       var id = userInfoOld[0].id;
        db.query('INSERT INTO auth_token VALUES($1, default, $2)', [token, id]);
      }
-     res.status(200).json({token: token, status: "loggedIn"});
+     res.status(200).json({token: token, status: "Logged In", username: userInfoOld[0].username, email: userInfoOld[0].email, first_name: userInfoOld[0].first_name, last_name: userInfoOld[0].last_name });
    });
  });
+
 });
 
 
@@ -155,7 +165,10 @@ io.on('connection', function(socket) {
 
 });
 
-
-http.listen(3000, function() {
+server.listen(3000, function() {
   console.log('listening on *:3000');
 });
+
+// http.listen(3000, function() {
+//   console.log('listening on *:3000');
+// });
