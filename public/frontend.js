@@ -19,6 +19,12 @@ app.config(function($stateProvider, $urlRouterProvider) {
     url: '/login',
     templateUrl: 'login.html',
     controller: 'LoginController'
+  })
+  .state({
+    name: 'chat',
+    url: '/chat',
+    templateUrl: 'chat.html',
+    controller: 'ChatController'
   });
 
   $urlRouterProvider.otherwise('/');
@@ -45,6 +51,8 @@ app.factory('copeService', function($http, $cookies, $rootScope, $state) {
       method: 'POST',
       url: url,
       data: data
+    }).success(function(loggedIn) {
+      $cookies.putObject('username', loggedIn.username);
     });
   };
 
@@ -55,6 +63,11 @@ app.factory('copeService', function($http, $cookies, $rootScope, $state) {
 app.controller('MainController', function($scope, copeService, $stateParams, $state) {
 
 });
+
+app.controller('ChatController', function() {
+
+  socketChat(username, listener, paired);
+})
 
 app.controller('SignUpController', function($scope, copeService, $stateParams, $state, $cookies, $rootScope) {
   $scope.submitSignup = function() {
@@ -115,7 +128,7 @@ function getParameterByName(name, url) {
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
-$(function() {
+function socketChat(username, listener, paired) {
 var socket = io();
 var $messageForm = $('#sendMessage');
 var $message = $('#m');

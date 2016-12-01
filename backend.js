@@ -2,10 +2,14 @@ var express = require('express'),
    app = express(),
    server = require('http').createServer(app),
    io = require('socket.io').listen(server),
-   bcrypt = require('bcrypt');
-   bodyParser = require('body-parser');
-   uuid = require('uuid');
-   pgp = require('pg-promise')();
+   bcrypt = require('bcrypt'),
+   bodyParser = require('body-parser'),
+   uuid = require('uuid'),
+   pgp = require('pg-promise')(),
+   room = '',
+   listeners = [],
+   speakerRoom = [];
+  //  http = require('http').Server(app);
 
   //  nicknames = [];
 
@@ -15,7 +19,6 @@ var express = require('express'),
 app.use(express.static('public'));
 app.use(bodyParser.json());
 
-server.listen(3000);
 
 
 var db = pgp(database='cope_db');
@@ -156,6 +159,10 @@ io.on('connection', function(socket) {
 });
 
 
-http.listen(3000, function() {
+server.listen(3000, function() {
   console.log('listening on *:3000');
 });
+
+// http.listen(3000, function() {
+//   console.log('listening on *:3000');
+// });
