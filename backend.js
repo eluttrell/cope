@@ -20,13 +20,13 @@ var express = require('express'),
 app.use(express.static('public'));
 app.use(bodyParser.json());
 
-// var db = pgp('cope_db');
-var db = pgp({
-  database: process.env.DB_NAME,
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.dnv.DB_PASS
-});
+var db = pgp('cope_db');
+// var db = pgp({
+//   database: process.env.DB_NAME,
+//   host: process.env.DB_HOST,
+//   user: process.env.DB_USER,
+//   password: process.dnv.DB_PASS
+// });
 
 
 
