@@ -6,10 +6,7 @@ var express = require('express'),
    bodyParser = require('body-parser'),
    uuid = require('uuid'),
    pgp = require('pg-promise')(),
-<<<<<<< HEAD
-=======
    dotenv = require('dotenv').config(),
->>>>>>> bd5ef60979e80a99e104504484e272ba14e793e3
    room = '',
    listeners = [],
    speakerRoom = [];
@@ -23,18 +20,14 @@ var express = require('express'),
 app.use(express.static('public'));
 app.use(bodyParser.json());
 
-<<<<<<< HEAD
-
-=======
->>>>>>> bd5ef60979e80a99e104504484e272ba14e793e3
 
 var db = pgp(database='cope_db');
 
-db.connect({
-  host: process.env.DB_HOST,
-  username: process.env.DB_USER,
-  password: process.dnv.DB_PASS
-});
+// db.connect({
+//   host: process.env.DB_HOST,
+//   username: process.env.DB_USER,
+//   password: process.dnv.DB_PASS
+// });
 
 //Signup
 app.post('/signup', function(req, res) {
@@ -172,10 +165,6 @@ io.on('connection', function(socket) {
 
 });
 
-<<<<<<< HEAD
-
-=======
->>>>>>> bd5ef60979e80a99e104504484e272ba14e793e3
 server.listen(3000, function() {
   console.log('listening on *:3000');
 });

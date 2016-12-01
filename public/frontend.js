@@ -25,15 +25,12 @@ app.config(function($stateProvider, $urlRouterProvider) {
     url: '/chat',
     templateUrl: 'chat.html',
     controller: 'ChatController'
-<<<<<<< HEAD
-=======
   })
   .state({
     name: 'profile',
     url: '/profile',
     templateUrl: 'profile.html',
     controller: 'ProfileController'
->>>>>>> bd5ef60979e80a99e104504484e272ba14e793e3
   });
 
   $urlRouterProvider.otherwise('/');
@@ -69,10 +66,6 @@ app.factory('copeService', function($http, $cookies, $rootScope, $state) {
       method: 'POST',
       url: url,
       data: data
-<<<<<<< HEAD
-    }).success(function(loggedIn) {
-      $cookies.putObject('username', loggedIn.username);
-=======
     }).success(function(loggedIn){
       $cookies.putObject('username', loggedIn.username);
       $cookies.putObject('email', loggedIn.email);
@@ -80,7 +73,6 @@ app.factory('copeService', function($http, $cookies, $rootScope, $state) {
       $cookies.putObject('last_name', loggedIn.last_name);
       $cookies.putObject('token', loggedIn.token);
       console.log("logged in");
->>>>>>> bd5ef60979e80a99e104504484e272ba14e793e3
     });
   };
 
