@@ -6,6 +6,7 @@ var express = require('express'),
    bodyParser = require('body-parser'),
    uuid = require('uuid'),
    pgp = require('pg-promise')(),
+   dotenv = require('dotenv').config(),
    room = '',
    listeners = [],
    speakerRoom = [];
@@ -22,7 +23,11 @@ app.use(bodyParser.json());
 
 var db = pgp(database='cope_db');
 
-db.connect();
+db.connect({
+  host: process.env.DB_HOST,
+  username: process.env.DB_USER,
+  password: process.dnv.DB_PASS
+});
 
 //Signup
 app.post('/signup', function(req, res) {

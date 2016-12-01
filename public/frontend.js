@@ -81,7 +81,12 @@ app.factory('copeService', function($http, $cookies, $rootScope, $state) {
 });
 
 app.controller('MainController', function($scope, copeService, $stateParams, $state, $rootScope) {
-
+  $scope.login = function() {
+    $state.go('login');
+  };
+  $scope.signup = function() {
+    $state.go('signup');
+  };
 });
 
 app.controller('ChatController', function($scope, copeService, $stateParams, $state, $cookies, $rootScope) {
