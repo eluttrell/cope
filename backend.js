@@ -21,13 +21,15 @@ app.use(express.static('public'));
 app.use(bodyParser.json());
 
 
-var db = pgp(database='cope_db');
+// var db = pgp('cope_db');
+var db = pgp({
+  database: process.env.DB_NAME,
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.dnv.DB_PASS
+});
 
-// db.connect({
-//   host: process.env.DB_HOST,
-//   username: process.env.DB_USER,
-//   password: process.dnv.DB_PASS
-// });
+
 
 //Signup
 app.post('/signup', function(req, res) {

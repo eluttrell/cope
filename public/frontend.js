@@ -185,27 +185,7 @@ function getParameterByName(name, url) {
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
-<<<<<<< HEAD
-function socketChat(username, listener, paired) {
-var socket = io();
-var $messageForm = $('#sendMessage');
-var $message = $('#m');
-var $chat = $('#messages');
-var $nickForm = $('#setNick');
-var $nickError = $('#nickError');
-var $nick = $('#nickname');
-var nickname = '';
-var user = {username: getParameterByName('username'), listener: getParameterByName('listener') === 'true'};
 
-function connectUser() {
-  socket.on('connect', function() {
-    socket.emit('user', user);
-    console.log('this is the user', user);
-  });
-}
-
-//these are extracted functions used in the logic
-=======
 var socketChat = function(username, listener, paired) {
   var socket = io();
   var $messageForm = $('#sendMessage');
@@ -216,7 +196,6 @@ var socketChat = function(username, listener, paired) {
   var $nick = $('#nickname');
   var nickname = '';
   var user = {username: username, listener: listener, paired: paired};
->>>>>>> bd5ef60979e80a99e104504484e272ba14e793e3
 
   function connectUser() {
     socket.on('connect', function() {
