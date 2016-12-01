@@ -94,8 +94,7 @@ app.controller('ChatController', function($scope, copeService, $stateParams, $st
     $scope.listener = $cookies.getObject('listener');
     $scope.paired = $cookies.getObject('paired');
     socketChat($scope.username, $scope.listener, $scope.paired);
-
-    copeService.logout(); //needs cookies
+    //deleted copeService.login();
 });
 
 app.controller('ProfileController', function($scope, copeService, $stateParams, $state, $cookies, $rootScope) {
